@@ -1,2 +1,2 @@
-export { default as ExampleComponent } from "./StandaloneComments";
-export type { ExampleComponentOptions } from "./StandaloneComments";
+export { default as StandaloneComments } from "./StandaloneComments";
+export type { StandaloneCommentsOptions } from "./StandaloneComments";

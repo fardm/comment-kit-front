@@ -74,6 +74,6 @@ var StandaloneComments_default = ((opts) => {
   return Component;
 });
 
-export { StandaloneComments_default as ExampleComponent };
+export { StandaloneComments_default as StandaloneComments };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

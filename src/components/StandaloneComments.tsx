@@ -5,17 +5,15 @@ import type {
 } from "@quartz-community/types";
 import { classNames } from "../util/lang";
 
-// تعریف متغیر گزینه‌های ورودی کامپوننت برای آدرس بک‌اند شما
-export interface ExampleComponentOptions {
+// تغییر نام اینترفیس برای جلوگیری از تداخل
+export interface StandaloneCommentsOptions {
   backendUrl?: string;
 }
 
-export default ((opts?: ExampleComponentOptions) => {
-  // مقدار پیش‌فرض در صورت ست نشدن در فایل کانفیگ کوارتز
+export default ((opts?: StandaloneCommentsOptions) => {
   const backendUrl = opts?.backendUrl ?? "/comments";
 
   const Component: QuartzComponent = ({ displayClass, fileData }: QuartzComponentProps) => {
-    // غیرفعال کردن کامنت‌ها در صورت وجود comments: false در فرانت‌متر هر صفحه
     const disableComment =
       typeof fileData.frontmatter?.comments !== "undefined" &&
       (fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false");
@@ -31,7 +29,6 @@ export default ((opts?: ExampleComponentOptions) => {
         class={classNames(displayClass, "standalone-comments-section")}
         style={{ marginTop: "3rem" }}
       >
-        {/* بارگذاری استایل‌های سیستم کامنت */}
         <link rel="stylesheet" href={`${backendUrl}/comments.css`} />
         <div
           id="comments-container"
@@ -42,7 +39,6 @@ export default ((opts?: ExampleComponentOptions) => {
     );
   };
 
-  // تزریق اسکریپت با روش استاندارد کوارتز برای SPA
   Component.afterDOMLoaded = `
     document.addEventListener("nav", () => {
       const container = document.getElementById('comments-container');
@@ -61,4 +57,4 @@ export default ((opts?: ExampleComponentOptions) => {
   `;
 
   return Component;
-}) satisfies QuartzComponentConstructor<ExampleComponentOptions>;
+}) satisfies QuartzComponentConstructor<StandaloneCommentsOptions>;

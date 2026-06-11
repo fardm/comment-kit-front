@@ -52,7 +52,7 @@ export interface ExampleEmitterOptions {
   manifestScriptClass?: string;
 }
 
-export interface ExampleComponentOptions {
+export interface StandaloneCommentsOptions {
   /** Text to prefix before the title */
   prefix?: string;
   /** Text to suffix after the title */

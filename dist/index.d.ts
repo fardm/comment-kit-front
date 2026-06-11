@@ -1,9 +1,9 @@
 import { QuartzComponent } from '@quartz-community/types';
 export { PageGenerator, PageMatcher, QuartzComponent, QuartzComponentConstructor, QuartzComponentProps, QuartzPageTypePlugin, QuartzPageTypePluginInstance, StringResource, VirtualPage } from '@quartz-community/types';
 
-interface ExampleComponentOptions {
+interface StandaloneCommentsOptions {
     backendUrl?: string;
 }
-declare const _default: (opts?: ExampleComponentOptions) => QuartzComponent;
+declare const _default: (opts?: StandaloneCommentsOptions) => QuartzComponent;
 
-export { _default as ExampleComponent, type ExampleComponentOptions };
+export { _default as StandaloneComments, type StandaloneCommentsOptions };

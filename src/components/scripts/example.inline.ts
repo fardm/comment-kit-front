@@ -59,7 +59,7 @@ function init() {
   function keyboardHandler(e: KeyboardEvent) {
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === "e") {
       e.preventDefault();
-      console.log("[ExampleComponent] Keyboard shortcut triggered!");
+      console.log("[StandaloneComments] Keyboard shortcut triggered!");
       // Do something interesting here
     }
   }
@@ -70,7 +70,7 @@ function init() {
   // Example: Click handler with proper cleanup
   for (const component of components) {
     const clickHandler = () => {
-      console.log("[ExampleComponent] Clicked!");
+      console.log("[StandaloneComments] Clicked!");
     };
     component.addEventListener("click", clickHandler);
     cleanupFns.push(() => component.removeEventListener("click", clickHandler));
@@ -83,7 +83,7 @@ function init() {
     });
   }
 
-  console.log("[ExampleComponent] Initialized with", components.length, "component(s)");
+  console.log("[StandaloneComments] Initialized with", components.length, "component(s)");
 }
 
 // Listen to Quartz navigation events
@@ -91,13 +91,13 @@ function init() {
 // 'render' fires when DOM content changes in-place (e.g. after decryption, dynamic content)
 document.addEventListener("nav", (e) => {
   const slug = e.detail?.url || getCurrentSlug();
-  console.log("[ExampleComponent] Navigation to:", slug);
+  console.log("[StandaloneComments] Navigation to:", slug);
   init();
 });
 
 // 'render' fires when DOM content changes in-place and components need re-initialization
 document.addEventListener("render", () => {
-  console.log("[ExampleComponent] Render event - re-initializing");
+  console.log("[StandaloneComments] Render event - re-initializing");
   init();
 });
 

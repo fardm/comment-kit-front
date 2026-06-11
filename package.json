@@ -116,7 +116,7 @@
       }
     },
     "components": {
-      "ExampleComponent": {
+      "StandaloneComments": {
         "displayName": "Standalone Comments",
         "defaultPosition": "afterBody",
         "defaultPriority": 100
