@@ -1,8 +1,2 @@
-import { QuartzComponent } from '@quartz-community/types';
-
-interface ExampleComponentOptions {
-    backendUrl?: string;
-}
-declare const _default: (opts?: ExampleComponentOptions) => QuartzComponent;
-
-export { _default as ExampleComponent, type ExampleComponentOptions };
+export { ExampleComponent, ExampleComponentOptions } from '../index.js';
+import '@quartz-community/types';

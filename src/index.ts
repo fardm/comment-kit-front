@@ -1,15 +1,7 @@
-export { ExampleTransformer } from "./transformer";
-export { ExampleFilter } from "./filter";
-export { ExampleEmitter } from "./emitter";
+// فقط کامپوننت کامنت صادر می‌شود تا هیچ تداخلی با پلاگین‌های دیگر ایجاد نشود
 export { default as ExampleComponent } from "./components/ExampleComponent";
 
-export type {
-  ExampleTransformerOptions,
-  ExampleFilterOptions,
-  ExampleEmitterOptions,
-} from "./types";
-
-// به‌روزرسانی تایپ آپشن‌های کامپوننت جدید شما
+// صادر کردن تایپ آپشن‌های کامپوننت شما
 export type { ExampleComponentOptions } from "./components/ExampleComponent";
 
 // Re-export shared types from @quartz-community/types
@@ -18,9 +10,6 @@ export type {
   QuartzComponentProps,
   QuartzComponentConstructor,
   StringResource,
-  QuartzTransformerPlugin,
-  QuartzFilterPlugin,
-  QuartzEmitterPlugin,
   QuartzPageTypePlugin,
   QuartzPageTypePluginInstance,
   PageMatcher,
