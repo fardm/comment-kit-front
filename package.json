@@ -94,15 +94,17 @@
     "vitest": "^2.1.9"
   },
   "quartz": {
-    "name": "plugin-template",
-    "displayName": "Plugin Template",
-    "category": "transformer",
+    "name": "quartz-standalone-comments",
+    "displayName": "Standalone Comments",
+    "category": "component",
     "version": "1.0.0",
     "quartzVersion": ">=5.0.0",
     "dependencies": [],
-    "defaultOrder": 50,
+    "defaultOrder": 100,
     "defaultEnabled": true,
-    "defaultOptions": {},
+    "defaultOptions": {
+      "backendUrl": "/comments"
+    },
     "optionSchema": {
       "highlightToken": {
         "type": "enum",
@@ -115,9 +117,9 @@
     },
     "components": {
       "ExampleComponent": {
-        "displayName": "Example Component",
-        "defaultPosition": "right",
-        "defaultPriority": 50
+        "displayName": "Standalone Comments",
+        "defaultPosition": "afterBody",
+        "defaultPriority": 100
       }
     }
   },

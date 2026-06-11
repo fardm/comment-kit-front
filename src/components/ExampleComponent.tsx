@@ -4,29 +4,61 @@ import type {
   QuartzComponentConstructor,
 } from "@quartz-community/types";
 import { classNames } from "../util/lang";
-import style from "./styles/example.scss";
-// @ts-expect-error - inline script import handled by Quartz bundler
-import script from "./scripts/example.inline.ts";
 
+// تعریف متغیر گزینه‌های ورودی کامپوننت برای آدرس بک‌اند شما
 export interface ExampleComponentOptions {
-  prefix?: string;
-  suffix?: string;
-  className?: string;
+  backendUrl?: string;
 }
 
 export default ((opts?: ExampleComponentOptions) => {
-  const { prefix = "", suffix = "", className = "example-component" } = opts ?? {};
+  // مقدار پیش‌فرض در صورت ست نشدن در فایل کانفیگ کوارتز
+  const backendUrl = opts?.backendUrl ?? "/comments";
 
-  const Component: QuartzComponent = (props: QuartzComponentProps) => {
-    const frontmatter = props.fileData?.frontmatter as { title?: string } | undefined;
-    const title = frontmatter?.title ?? "Untitled";
-    const fullText = `${prefix}${title}${suffix}`;
+  const Component: QuartzComponent = ({ displayClass, fileData }: QuartzComponentProps) => {
+    // غیرفعال کردن کامنت‌ها در صورت وجود comments: false در فرانت‌متر هر صفحه
+    const disableComment =
+      typeof fileData.frontmatter?.comments !== "undefined" &&
+      (fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false");
 
-    return <div class={classNames(className)}>{fullText}</div>;
+    if (disableComment) {
+      return null;
+    }
+
+    const pageId = fileData.slug === "index" ? "/" : `/${fileData.slug}`;
+
+    return (
+      <div
+        class={classNames(displayClass, "standalone-comments-section")}
+        style={{ marginTop: "3rem" }}
+      >
+        {/* بارگذاری استایل‌های سیستم کامنت */}
+        <link rel="stylesheet" href={`${backendUrl}/comments.css`} />
+        <div
+          id="comments-container"
+          data-api-url={`${backendUrl}/api.php`}
+          data-page-url={pageId}
+        ></div>
+      </div>
+    );
   };
 
-  Component.css = style;
-  Component.afterDOMLoaded = script;
+  // تزریق اسکریپت با روش استاندارد کوارتز برای SPA
+  Component.afterDOMLoaded = `
+    document.addEventListener("nav", () => {
+      const container = document.getElementById('comments-container');
+      if (!container) return;
+      
+      if (typeof window.initComments === 'function') {
+        window.initComments();
+      } else if (!document.getElementById('standalone-comments-script')) {
+        const script = document.createElement('script');
+        script.id = 'standalone-comments-script';
+        script.src = '${backendUrl}/comments.js';
+        script.defer = true;
+        document.body.appendChild(script);
+      }
+    });
+  `;
 
   return Component;
-}) satisfies QuartzComponentConstructor;
+}) satisfies QuartzComponentConstructor<ExampleComponentOptions>;
