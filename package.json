@@ -1,14 +1,14 @@
 {
-  "name": "@quartz-community/plugin-template",
+  "name": "quartz-standalone-comments",
   "version": "0.1.0",
-  "description": "Template repository for Quartz community plugins.",
+  "description": "standalone comments.",
   "type": "module",
   "license": "MIT",
-  "author": "Quartz Community",
-  "homepage": "https://quartz.jzhao.xyz",
+  "author": "fardm",
+  "homepage": "https://github.com/fardm/quartz-standalone-comments",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quartz-community/plugin-template"
+    "url": "https://github.com/fardm/quartz-standalone-comments.git"
   },
   "keywords": [
     "quartz",
