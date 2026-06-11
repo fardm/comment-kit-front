@@ -27,8 +27,8 @@ function u2(e2, t2, n2, o2, i2, u3) {
   return l.vnode && l.vnode(l2), l2;
 }
 
-// src/components/ExampleComponent.tsx
-var ExampleComponent_default = ((opts) => {
+// src/components/StandaloneComments.tsx
+var StandaloneComments_default = ((opts) => {
   const backendUrl = opts?.backendUrl ?? "/comments";
   const Component = ({ displayClass, fileData }) => {
     const disableComment = typeof fileData.frontmatter?.comments !== "undefined" && (fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false");
@@ -74,6 +74,6 @@ var ExampleComponent_default = ((opts) => {
   return Component;
 });
 
-export { ExampleComponent_default as ExampleComponent };
+export { StandaloneComments_default as ExampleComponent };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

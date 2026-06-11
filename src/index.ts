@@ -1,8 +1,8 @@
 // فقط کامپوننت کامنت صادر می‌شود تا هیچ تداخلی با پلاگین‌های دیگر ایجاد نشود
-export { default as ExampleComponent } from "./components/ExampleComponent";
+export { default as ExampleComponent } from "./components/StandaloneComments";
 
 // صادر کردن تایپ آپشن‌های کامپوننت شما
-export type { ExampleComponentOptions } from "./components/ExampleComponent";
+export type { ExampleComponentOptions } from "./components/StandaloneComments";
 
 // Re-export shared types from @quartz-community/types
 export type {
