@@ -1,7 +1,7 @@
 {
   "name": "quartz-standalone-comments",
   "version": "0.1.0",
-  "description": "standalone comments.",
+  "description": "A standalone comment manager tool for use on static websites, with no external dependencies. PHP and SQLite, self-contained in one folder.",
   "type": "module",
   "license": "MIT",
   "author": "fardm",
@@ -103,7 +103,7 @@
     "defaultOrder": 100,
     "defaultEnabled": true,
     "defaultOptions": {
-      "backendUrl": "/comments"
+      "backendUrl": "https://comments.yourdomain.com"
     },
     "optionSchema": {
       "highlightToken": {
