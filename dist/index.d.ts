@@ -3,6 +3,9 @@ export { PageGenerator, PageMatcher, QuartzComponent, QuartzComponentConstructor
 
 interface StandaloneCommentsOptions {
     backendUrl?: string;
+    type?: "full" | "recent";
+    title?: string;
+    limit?: number;
 }
 declare const _default: (opts?: StandaloneCommentsOptions) => QuartzComponent;
 

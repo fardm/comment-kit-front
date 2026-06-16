@@ -103,7 +103,8 @@
     "defaultOrder": 100,
     "defaultEnabled": true,
     "defaultOptions": {
-      "backendUrl": "https://comments.yourdomain.com"
+      "backendUrl": "https://comments.yourdomain.com",
+      "type": "full"
     },
     "optionSchema": {
       "highlightToken": {
