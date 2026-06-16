@@ -4,28 +4,23 @@ import type {
   QuartzComponentConstructor,
 } from "@quartz-community/types";
 import { classNames } from "../util/lang";
-
-// تعریف اینترفیس آپشن‌ها با اضافه شدن فیلد limit
 export interface StandaloneCommentsOptions {
   backendUrl?: string;
   type?: "full" | "recent";
   title?: string;
-  limit?: number; // اضافه شدن آپشن تعداد کامنت‌ها برای ابزارک
+  limit?: number;
 }
 
 export default ((opts?: StandaloneCommentsOptions) => {
-  // تنظیم مقادیر پیش‌فرض طبق معماری استاندارد کوارتز
   const backendUrl = opts?.backendUrl ?? "/comments";
   const type = opts?.type ?? "full";
-  const title = opts?.title ?? ""; // مقدار خالی یعنی عنوان به صورت خودکار از فایل زبان فچ می‌شود
-  const limit = opts?.limit ?? 5; // تعداد پیش‌فرض نمایش کامنت‌ها روی ۵ عدد تنظیم شده است
+  const title = opts?.title ?? "";
+  const limit = opts?.limit ?? 5; 
 
   const Component: QuartzComponent = ({ displayClass, fileData }: QuartzComponentProps) => {
-    // حالت اول: ابزارک آخرین نظرات برای سایدبار
     if (type === "recent") {
       return (
         <div class={classNames(displayClass, "recent-comments-widget")}>
-          {/* شناسه منحصربه‌فرد برای تغییر پویا براساس زبان فرانت‌اند */}
           <h3 id="recent-comments-title">{title}</h3>
           <div
             id="recent-comments-container"
@@ -39,7 +34,6 @@ export default ((opts?: StandaloneCommentsOptions) => {
       );
     }
 
-    // حالت دوم: باکس اصلی ثبت و نمایش کامنت‌ها (پیش‌فرض سیستم)
     const disableComment =
       typeof fileData.frontmatter?.comments !== "undefined" &&
       (fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false");
@@ -67,7 +61,7 @@ export default ((opts?: StandaloneCommentsOptions) => {
 
   Component.afterDOMLoaded = `
     document.addEventListener("nav", () => {
-      // ۱. راه‌اندازی باکس اصلی کامنت‌ها در بخش بعد از بدنه صفحه (afterBody)
+      // (full)
       const mainContainer = document.getElementById('comments-container');
       if (mainContainer) {
         if (typeof window.initComments === 'function') {
@@ -81,7 +75,7 @@ export default ((opts?: StandaloneCommentsOptions) => {
         }
       }
 
-      // ۲. راه‌اندازی و تزریق دیتای آخرین کامنت‌ها در سایدبار (recent)
+      // (recent)
       const recentContainer = document.getElementById('recent-comments-container');
       if (recentContainer) {
         const backendUrl = recentContainer.getAttribute('data-backend-url');
@@ -90,7 +84,6 @@ export default ((opts?: StandaloneCommentsOptions) => {
         
         const loadRecentComments = async () => {
           try {
-            // دریافت زبان تنظیم شده در سرور (فایل config.php)
             let lang = 'en';
             try {
               const configRes = await fetch(backendUrl + '/api.php?action=widget_config');
@@ -102,7 +95,6 @@ export default ((opts?: StandaloneCommentsOptions) => {
               console.warn("امکان دریافت زبان از سرور وجود نداشت، استفاده از پیش‌فرض انگلیسی."); 
             }
 
-            // لود داینامیک فایل زبان مربوطه در صورتی که قبلاً لود نشده باشد
             if (!window.COMMENTS_I18N) {
               await new Promise((resolve, reject) => {
                 const script = document.createElement('script');
@@ -113,18 +105,15 @@ export default ((opts?: StandaloneCommentsOptions) => {
               });
             }
 
-            // خواندن متغیرهای بومی‌سازی شده از فایل لود شده
             const t = window.COMMENTS_I18N.recentWidget || {
               title: 'Recent Comments', loading: 'Loading...', empty: 'No comments yet.', onPage: 'on page:', error: 'Error loading comments.', home: 'Home'
             };
 
-            // اعمال هوشمند عنوان براساس زبان (اگر کاربر عنوان دستی در YAML وارد نکرده باشد)
             if (!hasCustomTitle) {
               const titleEl = document.getElementById('recent-comments-title');
               if (titleEl) titleEl.textContent = t.title;
             }
 
-            // دریافت لیست کامنت‌ها براساس لیمیت مشخص شده در آپشن‌ها
             const response = await fetch(backendUrl + '/api.php?action=recent&limit=' + limit);
             if (!response.ok) throw new Error('Network error');
             const data = await response.json();
@@ -136,7 +125,6 @@ export default ((opts?: StandaloneCommentsOptions) => {
               return;
             }
 
-            // ساخت و رندر ساختار درختی ابزارک متناسب با تم کوارتز
             let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
             data.comments.forEach(comment => {
               const pageUrlParts = comment.page_url.replace(/\\/$/, '').split('/');
