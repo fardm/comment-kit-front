@@ -105,7 +105,9 @@ export default ((opts?: StandaloneCommentsOptions) => {
             // Note: The new comment-kit backend doesn't have a public "recent comments" endpoint.
             // This implementation fetches all approved comments and filters client-side, which is
             // inefficient. Consider adding a /api/comments/recent endpoint to the backend.
-            const response = await fetch(backendUrl + '/api/comments?status=approved&sort=desc&limit=' + limit);
+            // For now, we pass the current page URL to satisfy the backend requirement.
+            const currentPageUrl = window.location.href;
+            const response = await fetch(backendUrl + '/api/comments?page_url=' + encodeURIComponent(currentPageUrl) + '&status=approved&sort=desc&limit=' + limit);
             if (!response.ok) throw new Error('Network error');
             const data = await response.json();
 
