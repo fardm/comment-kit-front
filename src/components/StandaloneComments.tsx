@@ -47,94 +47,6 @@ function trimTrailingSlash(s: string): string {
   return s.replace(/\/+$/, "");
 }
 
-/**
- * HTML-escape a string for safe insertion as text content. The backend
- * stores comment content raw (it deliberately does NOT escape on input),
- * so the frontend MUST escape on render. Failing to do this is an XSS
- * vector.
- *
- * We also escape attribute-value metacharacters so the result is safe to
- * use inside both element text and quoted attributes.
- */
-function escapeHtml(text: unknown): string {
-  if (text === null || text === undefined) return "";
-  const s = String(text);
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-/**
- * Format an ISO timestamp as a relative "time ago" string (e.g.
- * "5m ago", "2h ago", "3d ago"), falling back to a locale date string
- * for older entries.
- */
-function timeAgo(iso: string): string {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return "";
-  const diff = Date.now() - d.getTime();
-  const s = Math.floor(diff / 1000);
-  if (s < 60) return "just now";
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  const days = Math.floor(h / 24);
-  if (days < 7) return `${days}d ago`;
-  return d.toLocaleDateString();
-}
-
-/**
- * Allowed reaction types. Must match the backend's ReactionType union
- * (see comment-kit/src/types/index.ts).
- */
-const REACTIONS: { type: string; emoji: string; label: string }[] = [
-  { type: "heart", emoji: "❤️", label: "Heart" },
-  { type: "thumbs_up", emoji: "👍", label: "Thumbs up" },
-  { type: "thumbs_down", emoji: "👎", label: "Thumbs down" },
-  { type: "laugh", emoji: "😄", label: "Laugh" },
-  { type: "cry", emoji: "😢", label: "Cry" },
-  { type: "fire", emoji: "🔥", label: "Fire" },
-  { type: "clap", emoji: "👏", label: "Clap" },
-];
-
-/**
- * Per-client vote cache so we can show "voted" state without an extra
- * round-trip. The backend already enforces uniqueness on
- * (comment_id, ip, reaction_type) so this is purely cosmetic.
- */
-function getLocalVotes(): Record<string, string[]> {
-  try {
-    return JSON.parse(localStorage.getItem("ck_votes") || "{}");
-  } catch {
-    return {};
-  }
-}
-function setLocalVotes(v: Record<string, string[]>): void {
-  try {
-    localStorage.setItem("ck_votes", JSON.stringify(v));
-  } catch {
-    // ignore quota / privacy-mode errors
-  }
-}
-function getLocalPostReactions(): Record<string, string[]> {
-  try {
-    return JSON.parse(localStorage.getItem("ck_post_reactions") || "{}");
-  } catch {
-    return {};
-  }
-}
-function setLocalPostReactions(v: Record<string, string[]>): void {
-  try {
-    localStorage.setItem("ck_post_reactions", JSON.stringify(v));
-  } catch {
-    // ignore
-  }
-}
-
 // ----------------------------------------------------------------------------
 // Client-side script
 // ----------------------------------------------------------------------------
@@ -142,6 +54,14 @@ function setLocalPostReactions(v: Record<string, string[]>): void {
 // This string is injected into a <script> tag and runs in the browser.
 // It uses a self-invoking function with a unique namespace so that
 // repeated SPA navigations don't leak listeners or duplicate state.
+//
+// NOTE: All runtime helpers used by the inline script (`escapeHtml`,
+// `timeAgo`, `REACTIONS`, `getLocalVotes`, etc.) are defined INSIDE the
+// script string below — they cannot be shared with the TSX module scope
+// because the script runs in a separate <script> tag context, not as a
+// JS module. Defining them at the TSX top-level would create dead code
+// (ESLint would flag them as unused) and would also bloat the bundle
+// with code that never executes server-side.
 //
 // IMPORTANT: This script is deliberately framework-free (vanilla JS) so
 // it can be inlined without bundling. It uses `document` APIs only.
@@ -928,8 +848,7 @@ export default ((opts?: StandaloneCommentsOptions) => {
     // ------------------------------------------------------------------
     const disableComment =
       typeof fileData.frontmatter?.comments !== "undefined" &&
-      (fileData.frontmatter?.comments === false ||
-        fileData.frontmatter?.comments === "false");
+      (fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false");
 
     if (disableComment) {
       return null;

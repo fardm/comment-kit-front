@@ -102,8 +102,8 @@ Even though the original code never actually rendered comments (just
 `console.log`'d them), the recent-comments widget did:
 
 ```js
-html += '  <div class="rc-widget-content">' + comment.content.substring(0, 100) + '...</div>';
-html += '  <div class="rc-widget-header"><strong>' + comment.author_name + '</strong></div>';
+html += '  <div class="rc-widget-content">' + comment.content.substring(0, 100) + "...</div>";
+html += '  <div class="rc-widget-header"><strong>' + comment.author_name + "</strong></div>";
 ```
 
 `comment.content` is stored raw in the backend (the backend
@@ -190,7 +190,7 @@ guard against double-initialization:
 
 ```js
 document.addEventListener("nav", () => {
-  const mainContainer = document.getElementById('comments-container');
+  const mainContainer = document.getElementById("comments-container");
   if (mainContainer) {
     // ... attach listeners, fetch comments, etc.
   }
@@ -348,7 +348,7 @@ anything title-related to the client.
 **File:** `src/components/StandaloneComments.tsx`
 
 ```js
-html += '<div class="rc-widget-content">' + comment.content.substring(0, 100) + '...</div>';
+html += '<div class="rc-widget-content">' + comment.content.substring(0, 100) + "...</div>";
 ```
 
 If the comment was shorter than 100 chars, the widget still appended
@@ -366,9 +366,9 @@ characters (closer to a typical "lede" length) and applied
 **File:** `src/components/StandaloneComments.tsx`
 
 ```js
-const pageUrlParts = comment.page_url.replace(/\/$/, '').split('/');
-const pageSlug = pageUrlParts[pageUrlParts.length - 1] || 'Home';
-const decodedSlug = decodeURIComponent(pageSlug).replace(/-/g, ' ');
+const pageUrlParts = comment.page_url.replace(/\/$/, "").split("/");
+const pageSlug = pageUrlParts[pageUrlParts.length - 1] || "Home";
+const decodedSlug = decodeURIComponent(pageSlug).replace(/-/g, " ");
 ```
 
 For a URL like `https://example.com` (no path), `pageUrlParts` is
@@ -413,8 +413,7 @@ is a separate concern handled by the Worker itself.
 ```ts
 const disableComment =
   typeof fileData.frontmatter?.comments !== "undefined" &&
-  (fileData.frontmatter?.comments === false ||
-   fileData.frontmatter?.comments === "false");
+  (fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false");
 ```
 
 The `typeof !== "undefined"` guard is redundant — `=== false` and
@@ -427,8 +426,7 @@ no one would actually write.
 
 ```ts
 const disableComment =
-  fileData.frontmatter?.comments === false ||
-  fileData.frontmatter?.comments === "false";
+  fileData.frontmatter?.comments === false || fileData.frontmatter?.comments === "false";
 ```
 
 This treats any non-false value (including `0`, `null`, `undefined`,
@@ -439,10 +437,10 @@ expectations.
 
 ## 📋 Files Modified
 
-| File | Change |
-|------|--------|
+| File                                    | Change                                                                                                                                                                                                                                                                                                   |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/components/StandaloneComments.tsx` | **Full rewrite.** Added threaded comment rendering, comment form with validation, emoji reactions (per-comment + post-level), email subscriptions, XSS-safe escaping, SPA navigation guards, dark-mode-aware CSS, recent-comments widget that polls an explicit page allow-list. ~1000 lines (was ~150). |
-| `README.md` | **Full rewrite.** Documented the new `recentPagesUrl` option, the `page_url` semantics, all API endpoints used, and the cross-origin (`ALLOWED_ORIGINS`) configuration requirement. |
+| `README.md`                             | **Full rewrite.** Documented the new `recentPagesUrl` option, the `page_url` semantics, all API endpoints used, and the cross-origin (`ALLOWED_ORIGINS`) configuration requirement.                                                                                                                      |
 
 No other files needed changes. The plugin's build (`tsup`), type
 definitions, and entry points (`src/index.ts`, `src/components/index.ts`)
@@ -473,7 +471,7 @@ After installing this fixed plugin, you need to:
    StandaloneComments({
      backendUrl: "https://comments.example.com",
      type: "full",
-   })
+   });
    ```
 
 2. **Configure CORS on the Worker.** Edit the Worker's `wrangler.toml`:
@@ -502,7 +500,7 @@ After installing this fixed plugin, you need to:
        "https://your-quartz-site.com/posts/getting-started",
        // ...
      ],
-   })
+   });
    ```
 
 4. **(If migrating from an older install)** If you previously had

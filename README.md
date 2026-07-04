@@ -71,13 +71,13 @@ ALLOWED_ORIGINS = "https://example.com,https://www.example.com"
 
 ## Configuration Options
 
-| Option           | Type                  | Default      | Description |
-|------------------|-----------------------|--------------|-------------|
-| `backendUrl`     | `string`              | `"/comments"` | Origin of your comment-kit Worker (no trailing slash). |
-| `type`           | `"full" \| "recent"`  | `"full"`     | `full` renders the comment section on the page; `recent` renders the sidebar widget. |
-| `title`          | `string`              | `""`         | Title for the recent-comments widget. Ignored in `full` mode. |
-| `limit`          | `number`              | `5`          | Max comments for the recent widget. Ignored in `full` mode. |
-| `recentPagesUrl` | `string[]`            | `[]`         | Pages to poll for the recent widget (absolute URLs). Required for the widget to show anything. |
+| Option           | Type                 | Default       | Description                                                                                    |
+| ---------------- | -------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
+| `backendUrl`     | `string`             | `"/comments"` | Origin of your comment-kit Worker (no trailing slash).                                         |
+| `type`           | `"full" \| "recent"` | `"full"`      | `full` renders the comment section on the page; `recent` renders the sidebar widget.           |
+| `title`          | `string`             | `""`          | Title for the recent-comments widget. Ignored in `full` mode.                                  |
+| `limit`          | `number`             | `5`           | Max comments for the recent widget. Ignored in `full` mode.                                    |
+| `recentPagesUrl` | `string[]`           | `[]`          | Pages to poll for the recent widget (absolute URLs). Required for the widget to show anything. |
 
 ## How `page_url` works
 
@@ -93,14 +93,14 @@ If you previously had comments stored under a different `page_url` scheme (e.g. 
 
 All of these are documented in the [comment-kit README](https://github.com/fardm/comment-kit#api-endpoints):
 
-| Method | Endpoint                                  | Purpose |
-|--------|-------------------------------------------|---------|
-| GET    | `/api/comments?page_url=…&sort=asc`       | Fetch the comment tree for a page. |
-| POST   | `/api/comments`                           | Submit a new comment (or reply). |
-| POST   | `/api/vote`                               | Toggle an emoji reaction on a comment. |
-| GET    | `/api/post-reaction?page_url=…`           | Fetch aggregate post-level reactions. |
-| POST   | `/api/post-reaction`                      | Toggle a post-level reaction. |
-| POST   | `/api/subscribe`                          | Subscribe the submitted email to notifications for the page. |
+| Method | Endpoint                            | Purpose                                                      |
+| ------ | ----------------------------------- | ------------------------------------------------------------ |
+| GET    | `/api/comments?page_url=…&sort=asc` | Fetch the comment tree for a page.                           |
+| POST   | `/api/comments`                     | Submit a new comment (or reply).                             |
+| POST   | `/api/vote`                         | Toggle an emoji reaction on a comment.                       |
+| GET    | `/api/post-reaction?page_url=…`     | Fetch aggregate post-level reactions.                        |
+| POST   | `/api/post-reaction`                | Toggle a post-level reaction.                                |
+| POST   | `/api/subscribe`                    | Subscribe the submitted email to notifications for the page. |
 
 ## Migration from PHP Backend
 
