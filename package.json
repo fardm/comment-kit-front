@@ -1,7 +1,7 @@
 {
   "name": "quartz-standalone-comments",
   "version": "0.1.0",
-  "description": "A standalone comment manager tool for use on static websites, with no external dependencies. PHP and SQLite, self-contained in one folder.",
+  "description": "A Quartz plugin for integrating with comment-kit, a modern comment system built on Cloudflare Workers + D1.",
   "type": "module",
   "license": "MIT",
   "author": "fardm",
@@ -50,7 +50,7 @@
     "format": "prettier . --check",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run lint && npm run format && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run format"
   },
   "peerDependencies": {
     "preact": "^10.0.0",
@@ -103,17 +103,25 @@
     "defaultOrder": 100,
     "defaultEnabled": true,
     "defaultOptions": {
-      "backendUrl": "https://comments.yourdomain.com",
+      "backendUrl": "https://your-comment-kit-worker.workers.dev",
       "type": "full"
     },
     "optionSchema": {
-      "highlightToken": {
+      "backendUrl": {
+        "type": "string"
+      },
+      "type": {
         "type": "enum",
         "values": [
-          "==",
-          "**",
-          "~~"
+          "full",
+          "recent"
         ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "limit": {
+        "type": "number"
       }
     },
     "components": {

@@ -1,11 +1,6 @@
 import { createRequire } from 'module';
 
 createRequire(import.meta.url);
-
-// node_modules/@quartz-community/utils/dist/lang.js
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 var l;
 l = { __e: function(n2, l2, u3, t2) {
   for (var i2, o2, r2; l2 = l2.__; ) if ((i2 = l2.__c) && !i2.__) try {
@@ -28,6 +23,9 @@ function u2(e2, t2, n2, o2, i2, u3) {
 }
 
 // src/components/StandaloneComments.tsx
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 var StandaloneComments_default = ((opts) => {
   const backendUrl = opts?.backendUrl ?? "/comments";
   const type = opts?.type ?? "full";
@@ -36,8 +34,7 @@ var StandaloneComments_default = ((opts) => {
   const Component = ({ displayClass, fileData }) => {
     if (type === "recent") {
       return /* @__PURE__ */ u2("div", { class: classNames(displayClass, "recent-comments-widget"), children: [
-        /* @__PURE__ */ u2("link", { rel: "stylesheet", href: `${backendUrl}/comments.css` }),
-        /* @__PURE__ */ u2("h3", { id: "recent-comments-title", children: title }),
+        /* @__PURE__ */ u2("h3", { id: "recent-comments-title", children: title || "Recent Comments" }),
         /* @__PURE__ */ u2(
           "div",
           {
@@ -45,7 +42,7 @@ var StandaloneComments_default = ((opts) => {
             "data-backend-url": backendUrl,
             "data-limit": limit,
             "data-custom-title": opts?.title ? "true" : "false",
-            children: /* @__PURE__ */ u2("p", { class: "rc-widget-loading", children: "\u062F\u0631 \u062D\u0627\u0644 \u0628\u0627\u0631\u06AF\u0630\u0627\u0631\u06CC..." })
+            children: /* @__PURE__ */ u2("p", { class: "rc-widget-loading", children: "Loading..." })
           }
         )
       ] });
@@ -60,97 +57,79 @@ var StandaloneComments_default = ((opts) => {
       {
         class: classNames(displayClass, "standalone-comments-section"),
         style: { marginTop: "3rem" },
-        children: [
-          /* @__PURE__ */ u2("link", { rel: "stylesheet", href: `${backendUrl}/comments.css` }),
-          /* @__PURE__ */ u2(
-            "div",
-            {
-              id: "comments-container",
-              "data-api-url": `${backendUrl}/api.php`,
-              "data-page-url": pageId
-            }
-          )
-        ]
+        children: /* @__PURE__ */ u2(
+          "div",
+          {
+            id: "comments-container",
+            "data-api-url": `${backendUrl}/api/comments`,
+            "data-page-url": pageId
+          }
+        )
       }
     );
   };
   Component.afterDOMLoaded = `
     document.addEventListener("nav", () => {
+      // Full comments section initialization
       const mainContainer = document.getElementById('comments-container');
       if (mainContainer) {
-        if (typeof window.initComments === 'function') {
-          window.initComments();
-        } else if (!document.getElementById('standalone-comments-script')) {
-          const script = document.createElement('script');
-          script.id = 'standalone-comments-script';
-          script.src = '${backendUrl}/comments.js';
-          script.defer = true;
-          document.body.appendChild(script);
-        }
+        const apiUrl = mainContainer.getAttribute('data-api-url');
+        const pageUrl = mainContainer.getAttribute('data-page-url');
+
+        // Load comments using the new RESTful API
+        const loadComments = async () => {
+          try {
+            const response = await fetch(apiUrl + '?page_url=' + encodeURIComponent(pageUrl) + '&status=approved&sort=asc');
+            if (!response.ok) throw new Error('Failed to load comments');
+            const data = await response.json();
+
+            // Initialize the comments UI
+            // Note: The new backend doesn't provide a client-side script, so you'll need to
+            // implement the comment form and display logic yourself or use a separate library
+            console.log('Comments loaded:', data.comments);
+            // TODO: Implement comment rendering and form submission logic
+          } catch (error) {
+            console.error('Error loading comments:', error);
+          }
+        };
+
+        loadComments();
       }
 
+      // Recent comments widget initialization
       const recentContainer = document.getElementById('recent-comments-container');
       if (recentContainer) {
         const backendUrl = recentContainer.getAttribute('data-backend-url');
         const limit = recentContainer.getAttribute('data-limit') || '5';
         const hasCustomTitle = recentContainer.getAttribute('data-custom-title') === 'true';
-        
+
         const loadRecentComments = async () => {
           try {
-            let lang = 'en';
-            try {
-              const configRes = await fetch(backendUrl + '/api.php?action=widget_config');
-              if (configRes.ok) {
-                const config = await configRes.json();
-                if (config.language) lang = config.language;
-              }
-            } catch(e) { 
-              console.warn("\u0627\u0645\u06A9\u0627\u0646 \u062F\u0631\u06CC\u0627\u0641\u062A \u0632\u0628\u0627\u0646 \u0627\u0632 \u0633\u0631\u0648\u0631 \u0648\u062C\u0648\u062F \u0646\u062F\u0627\u0634\u062A\u060C \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0627\u0632 \u067E\u06CC\u0634\u200C\u0641\u0631\u0636."); 
-            }
-
-            if (!window.COMMENTS_I18N) {
-              await new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = backendUrl + '/lang/' + lang + '.js';
-                script.onload = resolve;
-                script.onerror = reject;
-                document.head.appendChild(script);
-              });
-            }
-
-            const t = window.COMMENTS_I18N.recentWidget || {
-              title: 'Recent Comments', loading: 'Loading...', empty: 'No comments yet.', onPage: 'on page:', error: 'Error loading comments.', home: 'Home'
-            };
-
-            if (!hasCustomTitle) {
-              const titleEl = document.getElementById('recent-comments-title');
-              if (titleEl) titleEl.textContent = t.title;
-            }
-
-            const response = await fetch(backendUrl + '/api.php?action=recent&limit=' + limit);
+            // Note: The new comment-kit backend doesn't have a public "recent comments" endpoint.
+            // This implementation fetches all approved comments and filters client-side, which is
+            // inefficient. Consider adding a /api/comments/recent endpoint to the backend.
+            const response = await fetch(backendUrl + '/api/comments?status=approved&sort=desc&limit=' + limit);
             if (!response.ok) throw new Error('Network error');
             const data = await response.json();
-            
-            if (data.error) throw new Error(data.error);
-            
+
             if (!data.comments || data.comments.length === 0) {
-              recentContainer.innerHTML = '<span class="rc-widget-empty">' + t.empty + '</span>';
+              recentContainer.innerHTML = '<span class="rc-widget-empty">No comments yet.</span>';
               return;
             }
 
             let html = '<div class="rc-widget-list">';
             data.comments.forEach(comment => {
               const pageUrlParts = comment.page_url.replace(/\\/$/, '').split('/');
-              const pageSlug = pageUrlParts[pageUrlParts.length - 1] || t.home;
+              const pageSlug = pageUrlParts[pageUrlParts.length - 1] || 'Home';
               const decodedSlug = decodeURIComponent(pageSlug).replace(/-/g, ' ');
 
               html += '<div class="rc-widget-item">';
               html += '  <div class="rc-widget-header">';
               html += '    <strong>' + comment.author_name + '</strong>';
               html += '  </div>';
-              html += '  <div class="rc-widget-content">' + comment.excerpt + '</div>';
+              html += '  <div class="rc-widget-content">' + comment.content.substring(0, 100) + '...</div>';
               html += '  <div class="rc-widget-meta">';
-              html += '    ' + t.onPage + ' <a href="' + comment.page_url + '#comment-' + comment.id + '" class="rc-widget-link">' + decodedSlug + '</a>';
+              html += '    on page: <a href="' + comment.page_url + '#comment-' + comment.id + '" class="rc-widget-link">' + decodedSlug + '</a>';
               html += '  </div>';
               html += '</div>';
             });
@@ -159,8 +138,7 @@ var StandaloneComments_default = ((opts) => {
 
           } catch (error) {
             console.error('Error loading recent comments:', error);
-            const t = window.COMMENTS_I18N?.recentWidget || {};
-            recentContainer.innerHTML = '<span class="rc-widget-error">' + (t.error || 'Error loading comments.') + '</span>';
+            recentContainer.innerHTML = '<span class="rc-widget-error">Error loading comments.</span>';
           }
         };
 

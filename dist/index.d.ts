@@ -1,5 +1,5 @@
 import { QuartzComponent } from '@quartz-community/types';
-export { PageGenerator, PageMatcher, QuartzComponent, QuartzComponentConstructor, QuartzComponentProps, QuartzPageTypePlugin, QuartzPageTypePluginInstance, StringResource, VirtualPage } from '@quartz-community/types';
+export { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from '@quartz-community/types';
 
 interface StandaloneCommentsOptions {
     backendUrl?: string;
